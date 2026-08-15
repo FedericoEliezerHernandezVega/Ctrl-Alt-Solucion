@@ -251,12 +251,13 @@ h2.section-title{
 .section-pad{padding:120px 0;}
 
 /* Reveal on scroll */
-.reveal{opacity:0;transform:translateY(24px);}
-.reveal.dir-down.in{animation:revealDown .7s ease both;}
+.reveal{opacity:0;transform:translateY(24px);transform-origin:center bottom;}
+.reveal.dir-down.in{animation:revealDown .75s cubic-bezier(.22,.9,.32,1) both;}
 .reveal.dir-up.in{animation:revealUp .85s cubic-bezier(.34,1.56,.64,1) both;}
 @keyframes revealDown{
-  from{opacity:0;transform:translateY(24px);}
-  to{opacity:1;transform:translateY(0);}
+  0%{opacity:0;transform:perspective(700px) rotateX(-30deg) translateY(28px) scale(.96);filter:brightness(1.7) saturate(1.3);}
+  55%{opacity:1;}
+  100%{opacity:1;transform:perspective(700px) rotateX(0deg) translateY(0) scale(1);filter:brightness(1) saturate(1);}
 }
 @keyframes revealUp{
   0%{opacity:0;transform:translateY(-55px) scale(.9);filter:drop-shadow(0 0 0 rgba(183,148,246,0));}
@@ -313,6 +314,30 @@ h2.section-title{
   animation:featuredPulse 3.4s ease-in-out infinite;
 }
 @keyframes featuredPulse{0%,100%{box-shadow:0 0 50px rgba(139,95,168,0.22);}50%{box-shadow:0 0 70px rgba(183,148,246,0.38);}}
+
+/* Golden neon wave chasing around the border of RECOMENDADO cards — driven by JS (--wangle), constant */
+.price-card.featured{--wangle:0deg;}
+.price-card.featured::before{
+  content:'';
+  position:absolute;inset:0;
+  border-radius:inherit;
+  padding:2px;
+  background:repeating-conic-gradient(from var(--wangle),
+    transparent 0deg,
+    transparent 10deg,
+    rgba(255,230,160,0.9) 14deg,
+    rgba(247,215,116,0.95) 17deg,
+    transparent 21deg,
+    transparent 30deg
+  );
+  -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+          mask-composite:exclude;
+  filter:drop-shadow(0 0 3px rgba(255,225,140,0.9)) drop-shadow(0 0 9px rgba(247,215,116,0.55));
+  pointer-events:none;
+  z-index:0;
+}
+.price-card.featured > *{position:relative;z-index:1;}
 .price-tag{
   position:absolute;top:-13px;right:24px;
   font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.06em;
@@ -347,24 +372,24 @@ h2.section-title{
 
 .continuity-grid{display:grid;grid-template-columns:1fr 1fr 0.82fr;gap:20px;align-items:start;}
 .plan-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:26px;}
-.plan-card.plan-shift{border-color:rgba(94,222,146,0.35);}
-.plan-card.plan-funcion{border-color:rgba(240,196,80,0.35);}
-.plan-card.plan-no{border-color:rgba(230,90,90,0.35);}
+.plan-card.plan-shift{border-color:rgba(155,127,199,0.4);}
+.plan-card.plan-funcion{border-color:rgba(183,148,246,0.5);}
+.plan-card.plan-no{border-color:rgba(122,32,72,0.55);}
 .plan-badge{display:inline-block;font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.04em;padding:6px 14px;border-radius:20px;margin-bottom:16px;}
-.plan-shift .plan-badge{background:rgba(94,222,146,0.14);color:#6EE7A0;}
-.plan-funcion .plan-badge{background:rgba(240,196,80,0.14);color:#F0C450;}
+.plan-shift .plan-badge{background:rgba(155,127,199,0.16);color:var(--violet);}
+.plan-funcion .plan-badge{background:rgba(183,148,246,0.2);color:var(--glow);}
 .plan-price{font-family:var(--display);font-size:1.9rem;font-weight:700;margin-bottom:6px;}
 .plan-price span{font-size:0.92rem;color:var(--text-dim);font-weight:500;}
 .plan-tagline{font-size:0.85rem;color:var(--text-muted);margin-bottom:22px;min-height:34px;}
 .plan-group{margin-bottom:16px;}
 .plan-group h5{font-size:0.82rem;font-weight:600;margin-bottom:6px;}
-.plan-shift .plan-group h5{color:#6EE7A0;}
-.plan-funcion .plan-group h5{color:#F0C450;}
+.plan-shift .plan-group h5{color:var(--violet);}
+.plan-funcion .plan-group h5{color:var(--glow);}
 .plan-group ul li{font-size:0.82rem;color:var(--text-muted);padding:2px 0 2px 15px;position:relative;}
 .plan-group ul li::before{content:'—';position:absolute;left:0;color:var(--text-dim);}
-.plan-no h4{color:#F08080;font-family:var(--display);font-size:1.05rem;font-weight:600;margin-bottom:18px;}
+.plan-no h4{color:#E39BB8;font-family:var(--display);font-size:1.05rem;font-weight:600;margin-bottom:18px;}
 .plan-no ul li{font-size:0.85rem;color:var(--text-muted);padding:6px 0 6px 22px;position:relative;}
-.plan-no ul li::before{content:'✕';position:absolute;left:0;color:#F08080;font-size:0.72rem;}
+.plan-no ul li::before{content:'✕';position:absolute;left:0;color:#E39BB8;font-size:0.72rem;}
 
 /* ===== Process ===== */
 .process-track{display:flex;gap:0;position:relative;}
@@ -497,7 +522,6 @@ footer{border-top:1px solid var(--border);padding:64px 0 32px;background:var(--b
       <a href="#proceso">Proceso</a>
     </div>
     <div class="nav-cta">
-      <a href="#cotizacion" class="btn-primary">ENTER <span style="opacity:.7">→</span> Cotizar</a>
       <button class="hamburger" id="hamburger-btn" aria-label="Abrir menú"><span></span><span></span><span></span></button>
     </div>
   </nav>
@@ -631,7 +655,7 @@ footer{border-top:1px solid var(--border);padding:64px 0 32px;background:var(--b
 
         <div class="price-card featured reveal">
           <div class="price-tag">RECOMENDADO</div>
-          <div class="pk-name">[ ALT ]</div>
+                    <div class="pk-name">[ ALT ]</div>
           <h3>Paquete Alterno</h3>
           <div class="amount">$2,300<span> MXN</span></div>
           <p class="tagline">"Cuando tu negocio ya quiere vender más allá de la mesa"</p>
@@ -699,7 +723,7 @@ footer{border-top:1px solid var(--border);padding:64px 0 32px;background:var(--b
 
         <div class="price-card featured reveal">
           <div class="price-tag">RECOMENDADO</div>
-          <div class="pk-name">[ WEB ]</div>
+                    <div class="pk-name">[ WEB ]</div>
           <h3>Web Profesional</h3>
           <div class="amount">$6,500<span> MXN</span></div>
           <p class="tagline">"Cuando tu negocio necesita más que una tarjeta de presentación digital."</p>
@@ -758,7 +782,7 @@ footer{border-top:1px solid var(--border);padding:64px 0 32px;background:var(--b
 
         <div class="price-card featured reveal">
           <div class="price-tag">RECOMENDADO</div>
-          <div class="pk-name">[ SHOP ]</div>
+                    <div class="pk-name">[ SHOP ]</div>
           <h3>E-commerce Profesional</h3>
           <div class="amount">$14,000<span> MXN</span></div>
           <p class="tagline">"Para negocios que ya venden y quieren vender mejor."</p>
@@ -1077,7 +1101,7 @@ footer{border-top:1px solid var(--border);padding:64px 0 32px;background:var(--b
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="#top" class="logo"><img src="img/logo.png" alt="Ctrl+Alt+Solución" class="logo-img" onerror="this.style.display='none'">Ctrl+Alt+Solución</a>
+        <a href="#top" class="logo"><img src="img/Logo.png" alt="Ctrl+Alt+Solución" class="logo-img" onerror="this.style.display='none'">Ctrl+Alt+Solución</a>
         <p>Soluciones tecnológicas para hacer crecer tu negocio.</p>
       </div>
       <div class="footer-col">
@@ -1119,6 +1143,19 @@ footer{border-top:1px solid var(--border);padding:64px 0 32px;background:var(--b
 <script>
 // Solutions data — key label, name, description, price
 requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add('hero-loaded')));
+
+// Constant golden wave chasing around RECOMENDADO cards
+(function(){
+  const featuredCards = document.querySelectorAll('.price-card.featured');
+  if (!featuredCards.length) return;
+  let angle = 0;
+  function tick(){
+    angle = (angle + 0.9) % 360;
+    featuredCards.forEach(card => card.style.setProperty('--wangle', angle + 'deg'));
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
 
 const hamburgerBtn = document.getElementById('hamburger-btn');
 const mobileMenu = document.getElementById('mobile-menu');
