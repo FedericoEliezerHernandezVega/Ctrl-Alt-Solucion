@@ -1150,7 +1150,7 @@ requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.
   if (!featuredCards.length) return;
   let angle = 0;
   function tick(){
-    angle = (angle + 0.9) % 360;
+    angle = (angle + 0.3) % 360;
     featuredCards.forEach(card => card.style.setProperty('--wangle', angle + 'deg'));
     requestAnimationFrame(tick);
   }
