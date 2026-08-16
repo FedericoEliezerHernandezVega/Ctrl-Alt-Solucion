@@ -252,12 +252,13 @@ h2.section-title{
 
 /* Reveal on scroll */
 .reveal{opacity:0;transform:translateY(24px);transform-origin:center bottom;}
-.reveal.dir-down.in{animation:revealDown .75s cubic-bezier(.22,.9,.32,1) both;}
+.reveal.dir-down.in{animation:revealDown .8s ease-out both;}
 .reveal.dir-up.in{animation:revealUp .85s cubic-bezier(.34,1.56,.64,1) both;}
 @keyframes revealDown{
-  0%{opacity:0;transform:translateY(32px) scale(.94) rotate(-1.2deg);}
-  60%{opacity:1;}
-  100%{opacity:1;transform:translateY(0) scale(1) rotate(0deg);}
+  0%{opacity:0;transform:translateY(64px) rotate(5deg) scale(.85);}
+  45%{opacity:1;transform:translateY(-10px) rotate(-2deg) scale(1.04);}
+  72%{transform:translateY(4px) rotate(1deg) scale(.99);}
+  100%{opacity:1;transform:translateY(0) rotate(0deg) scale(1);}
 }
 @keyframes revealUp{
   0%{opacity:0;transform:translateY(-55px) scale(.9);filter:drop-shadow(0 0 0 rgba(183,148,246,0));}
@@ -1211,16 +1212,23 @@ window.addEventListener('scroll', () => {
 const io = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      entry.target.classList.add(scrollDir === 'up' ? 'dir-up' : 'dir-down');
-      entry.target.classList.add('in');
-      // once revealed, stay revealed for good — this is what makes it reliable
-      // on mobile: no more toggling elements invisible again when they exit
-      // the viewport, which was causing tall sections (like the FUNCIÓN plan
-      // or the quote form) to vanish unpredictably during fast scrolling.
-      io.unobserve(entry.target);
+      requestAnimationFrame(() => {
+        entry.target.classList.remove('dir-up','dir-down');
+        entry.target.classList.add(scrollDir === 'up' ? 'dir-up' : 'dir-down');
+        entry.target.classList.add('in');
+      });
+    } else {
+      // Only hide it again once it has FULLY left the viewport (not just
+      // dipped below the trigger threshold). entry.boundingClientRect is
+      // provided for free by the observer — no extra layout read needed.
+      // This avoids the old bug where tall sections (like the FUNCIÓN plan
+      // or the quote form) could get stuck invisible near the edge case.
+      const r = entry.boundingClientRect;
+      const fullyOut = r.bottom < 0 || r.top > window.innerHeight;
+      if (fullyOut) entry.target.classList.remove('in');
     }
   });
-}, {threshold:0.1, rootMargin:'0px 0px -40px 0px'});
+}, {threshold:[0, 0.12], rootMargin:'0px 0px -8% 0px'});
 revealEls.forEach(el => io.observe(el));
 
 // Scroll progress bar
